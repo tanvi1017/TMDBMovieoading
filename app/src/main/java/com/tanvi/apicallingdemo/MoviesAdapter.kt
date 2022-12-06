@@ -37,7 +37,6 @@ class MoviesAdapter(var movies:MutableList<Result>):RecyclerView.Adapter<MoviesA
        movies = updatedMovies as MutableList<Result>
         notifyDataSetChanged()
 
-// tum scroll mt krna
     }
   // applying paginations
     class MoviesViewHolder(itemView : View): RecyclerView.ViewHolder(itemView){
@@ -78,10 +77,8 @@ class MoviesAdapter(var movies:MutableList<Result>):RecyclerView.Adapter<MoviesA
              val newEmployee: Result = newMovieResultLists[newItemPosition]
              return oldEmployee.title == newEmployee.title
          }
-
          @Nullable
          override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
-             // Implement method if you're going to use ItemAnimator
              return super.getChangePayload(oldItemPosition, newItemPosition)
          }
 

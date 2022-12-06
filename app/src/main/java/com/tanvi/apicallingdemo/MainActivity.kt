@@ -1,6 +1,8 @@
 package com.tanvi.apicallingdemo
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.AbsListView
@@ -18,7 +20,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var recyclerView: RecyclerView
     lateinit var progress_bar: ProgressBar
     var rvAdapter = MoviesAdapter(mutableListOf())
-
     var isScrolling: Boolean = false
     var visibleItemCount:Int  =0
     var totalItemCount:Int = 0
@@ -36,33 +37,25 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         progress_bar = findViewById(R.id.progress_bar)
         recyclerView = findViewById(R.id.recyclerView)
-        //dekho we wil simplyfy this make making a fucntion
         recyclerView.adapter = rvAdapter
         recyclerView.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@MainActivity)
         }
         callApi(page)
-
         setRvListeners()
-        //agai startind s start kyu hota hai
     }
-    // isliye pagenumber ko  yha parameter m dala h taki oper s jb function call kre tb send kre
-    // dekho age smj m ayega
-    // pagination chal ra h
     fun callApi(pageNumber:Int){
     Log.v("pnumber", pageNumber.toString())
         val request = ServiceBuilder.buildService(TmdbEndpoint::class.java)
-
-        request.getMovies(
-            getString(R.string.api_Key),
+        request.getMovies(getString(R.string.api_Key),
             pageNumber
         ).also {
             it.enqueue(object : Callback<PopularMovies>{
                 override fun onResponse(call: Call<PopularMovies>, response: Response<PopularMovies>) {
                     if (response.isSuccessful){
                         resultList.addAll(response.body()!!.results)
-                        Log.v("pnumber22", resultList.size.toString())
+                        Log.v("pnumber15", resultList.size.toString())
                         rvAdapter.updateMovieList(resultList)
                         progress_bar.visibility = View.GONE
 
@@ -95,7 +88,10 @@ class MainActivity : AppCompatActivity() {
                     isScrolling = false
                     progress_bar.visibility= View.VISIBLE
                     page++
-                    callApi(page)
+
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        callApi(page)
+                    }, 2000)
 
 
                 }
